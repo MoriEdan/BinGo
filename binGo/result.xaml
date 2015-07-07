@@ -1,0 +1,11 @@
+﻿<Window x:Class="binGo.result"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="result" Height="900" Width="1440" HorizontalAlignment="Left" VerticalAlignment="Top" AllowsTransparency="True" WindowStyle="None">
+    <Window.Background>
+        <SolidColorBrush Opacity="0.6" Color="Black"/>
+    </Window.Background>
+    <Grid>
+        
+    </Grid>
+</Window>
