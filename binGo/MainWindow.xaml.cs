@@ -13,8 +13,8 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Runtime.InteropServices;
-using System.Windows.Input;
 using System.Threading;
+using System.IO;
 
 namespace binGo
 {
@@ -23,10 +23,18 @@ namespace binGo
     /// </summary>
     public partial class MainWindow : Window
     {
+
+        public static List<KeyValuePair<string, string>> result;
+        private static List<string> cache;
+        public static string logFilesDir = Environment.GetFolderPath(Environment.SpecialFolder.Desktop) +"\\temp\\";
+
         public MainWindow()
         {
             InitializeComponent();
             MouseDown += Window_MouseDown;
+
+            result = new List<KeyValuePair<string, string>>();
+            cache = new List<string>();
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
@@ -75,8 +83,6 @@ namespace binGo
         {
             if (e.Key == System.Windows.Input.Key.Enter)
             {
-                result r = new result();
-                r.Show();
                 this.Topmost = true;
 
                 this.Height = 47;
@@ -85,13 +91,12 @@ namespace binGo
                 animateToTopIfNeeded(150);
 
                 result_key.Items.Clear();
+                result_value.Children.Clear();
                 
-
-                foreach (KeyValuePair<string, string> kvp in bingSearch.Search(key.Text.Trim()))
+                result = bingSearch.Search(key.Text.Trim());
+                foreach (KeyValuePair<string, string> kvp in result)
                 {
-                    var img = CreateImage(kvp.Value);
                     result_key.Items.Add(kvp.Key);
-                    workspace.Children.Add(img);
                 }
                 this.Height = 382;                
             }
@@ -100,8 +105,8 @@ namespace binGo
         private Image CreateImage(string src)
         {
             Image Mole = new Image();
-            Mole.Width = 100;
-            Mole.Height = 100;
+            Mole.Width = 300;
+            Mole.Height = 300;
             ImageSource MoleImage = new BitmapImage(new Uri(src));
             Mole.Source = MoleImage;
             return Mole;
@@ -117,6 +122,32 @@ namespace binGo
                 pos -= dx;
                 this.Top = pos;
                 Thread.Sleep(1);
+            }
+        }
+
+        private void Window_KeyUp(object sender, System.Windows.Input.KeyEventArgs e)
+        {
+            
+        }
+
+        private void result_key_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (result_key.SelectedIndex >= 0)
+            {
+                var img = CreateImage(result.ElementAt(result_key.SelectedIndex).Value);
+                result_value.Children.Clear();
+                result_value.Children.Add(img);
+            }
+        }
+    }
+
+    class cacheWorker
+    {
+        public void performCache(List<KeyValuePair<string, string>> result)
+        {
+            if (!Directory.Exists(MainWindow.logFilesDir))
+            {
+                Directory.CreateDirectory(MainWindow.logFilesDir);
             }
         }
     }

@@ -31,7 +31,7 @@ namespace binGo
 
             foreach (var result in imageResults)
             {
-                op.Add(new KeyValuePair<string, string>(result.Title, result.SourceUrl));
+                op.Add(new KeyValuePair<string, string>(result.Title, result.MediaUrl));
             }
 
             return op;
